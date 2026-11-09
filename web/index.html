@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calculator</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 24rem;
+        margin: 3rem auto;
+        padding: 0 1rem;
+      }
+      output {
+        display: block;
+        font-size: 1.5rem;
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Calculator</h1>
+    <p>Demo UI for factory jobs. Logic lives in <code>calc.py</code>.</p>
+    <label>
+      a
+      <input id="a" type="number" value="2" />
+    </label>
+    <label>
+      b
+      <input id="b" type="number" value="3" />
+    </label>
+    <button type="button" id="add">add(a, b)</button>
+    <output id="out">5</output>
+    <script>
+      const a = document.getElementById("a");
+      const b = document.getElementById("b");
+      const out = document.getElementById("out");
+      document.getElementById("add").addEventListener("click", () => {
+        out.textContent = Number(a.value) + Number(b.value);
+      });
+    </script>
+  </body>
+</html>

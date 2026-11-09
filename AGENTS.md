@@ -1,34 +1,52 @@
-# Software Factory (v1 template)
+# Calculator factory demo
 
-This repository holds the **zazencodes software-factory-claude-code v1** bundle:
-`.claude/` (orchestrator skill + subagents) and `factory/` (dashboard, backlog, job state).
+Small Python calculator (`calc.py`) plus a static page (`web/index.html`) used to
+exercise the v2 software factory end to end. Standard library only—no new
+dependencies.
 
-## Using this in another project
+## Fresh checkout
 
-Copy `.claude/` and `factory/` into your application repo root. Replace this file with
-instructions for **your** app: install steps, dev server host/port, and how to run
-tests, lint, typecheck, and build. The factory agents read this file; nothing
-repo-specific lives in the skill or agent definitions.
-
-## This standalone repo
-
-There is no application codebase here—only the factory machinery. To run jobs against
-real code, either embed the factory in an app repo or add an app and document commands
-above.
-
-## Dashboard
+From the repo root:
 
 ```bash
-cd factory && python3 -m http.server
+# No install step; Python 3.10+ only.
+python3 -m unittest discover -s tests -t .
 ```
 
-Open `http://localhost:8000/dashboard.html`.
+## Dev server (optional, for UI jobs)
 
-## Commands (Claude Code)
+Static files only. From the repo root:
 
-- `/factory <feature>` — new job through the loop
-- `/factory next` — first unchecked item in `factory/backlog.md`
-- `/factory approve <job-id>` — merge a needs-human job
-- `/factory rework <job-id> <note>` — send feedback back to the builder
+```bash
+python3 -m http.server 8000 --directory web
+```
 
-Upstream: [software-factory-claude-code](https://github.com/zazencodes/zazencodes-season-3/tree/main/src/software-factory-claude-code)
+For factory jobs, use the port given in the agent prompt (see **Software factory**).
+
+## Validation
+
+Matches `factory/checks.sh`:
+
+```bash
+python3 -m unittest discover -s tests -t .
+```
+
+Conventions:
+
+- Every function in `calc.py` should have tests under `tests/`.
+- Prefer one test module per new function (e.g. `tests/test_subtract.py`).
+- `tests/test_calc.py` is protected; add new tests in new files instead of editing it.
+
+## Software factory
+
+`/factory run` builds every open GitHub issue labeled `factory` through
+intake → spec → build → gate → review → approve, one PR per issue. State is in
+`factory/jobs/` (gitignored); `factory/bin/job` is its only writer. Checks:
+`factory/checks.sh`. Dashboard: `cd factory && python3 -m http.server`, then
+open http://localhost:8000/dashboard.html.
+
+Each job works in its own git worktree, a full checkout of the repo at
+`.worktrees/<job-id>` (gitignored). A tool run from the repo root that doesn't
+read `.gitignore` sees those copies too; exclude `.worktrees/` in its config.
+
+Example job artifacts (for learning the file formats): `examples/jobs/`.
